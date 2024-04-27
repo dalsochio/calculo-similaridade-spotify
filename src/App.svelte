@@ -1,4 +1,16 @@
 <script>
+  let indices = {
+    cantor: {
+      id: "cantor",
+      nome: "Cantor",
+      peso: 2,
+      valores: [
+        { id: 0, nome: "Homem" },
+        { id: 1, nome: "Mulher" },
+      ],
+    },
+  };
+
   let resultados = [
     {
       capaAlbum:
@@ -12,30 +24,31 @@
   let entradas = [];
   let tempEntrada = {
     indice: null,
-    atributo: null,
+    valor: null,
   };
 
   function addEntrada(entrada) {
     entradas = [...entradas, entrada];
     tempEntrada = {
       indice: null,
-      atributo: null,
+      valor: null,
     };
   }
 
   function delEntrada(index) {
-    entradas = entradas.filter(
-      (entrada, indexEntrada) => indexEntrada !== index,
-    );
+    entradas = entradas.filter((_, indexEntrada) => indexEntrada !== index);
   }
 </script>
 
 <main class="flex flex-col gap-4 h-full w-11/12 mx-auto mt-8">
   <h1 class="font-semibold text-2xl">Cálculo de similaridade</h1>
   <hr />
-  <div class="mt-4 flex flex-row justify-between gap-4">
-    <div class="border border-2 rounded-md p-4">
-      <p>Caso de entrada:</p>
+  <div
+    class="mt-4 grid grid-rows-2 lg:grid-rows-none lg:grid-cols-2 justify-between gap-4"
+  >
+    <div class="flex flex-col gap-4 border border-2 rounded-md p-4">
+      <h2 class="font-semibold text-xl">Caso de entrada</h2>
+      <hr />
       <table
         class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
       >
@@ -44,7 +57,7 @@
         >
           <tr>
             <th scope="col" class="px-6 py-3"> Índice </th>
-            <th scope="col" class="px-6 py-3"> Atributo </th>
+            <th scope="col" class="px-6 py-3"> Valor </th>
             <th scope="col" class="px-6 py-3"> Ação </th>
           </tr>
         </thead>
@@ -55,9 +68,11 @@
                 scope="row"
                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
-                {entrada.indice}
+                {indices[entrada.indice].nome}
               </th>
-              <td class="px-6 py-4"> {entrada.atributo} </td>
+              <td class="px-6 py-4">
+                {indices[entrada.indice].valores[entrada.valor].nome}
+              </td>
               <td class="px-6 py-4">
                 <button
                   class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white disabled:bg-gray-100 disabled:text-gray-500 border border-1 rounded-md select-none"
@@ -76,22 +91,28 @@
                 class="px-4 py-2 border border-1 rounded-md"
               >
                 <option disabled selected value={null}>Índice</option>
-                <option>Cantor</option>
-                <option>Gênero</option>
-                <option>Acústica</option>
-                <option>Similaridade</option>
+                {#each Object.values(indices) as indice}
+                  <option
+                    disabled={entradas.filter(
+                      (entrada) => entrada.indice === indice.id,
+                    ).length > 0}
+                    value={indice.id}>{indice.nome}</option
+                  >
+                {/each}
               </select>
             </th>
             <td class="px-6 py-4">
               <select
-                bind:value={tempEntrada.atributo}
+                disabled={tempEntrada.indice === null}
+                bind:value={tempEntrada.valor}
                 class="px-4 py-2 border border-1 rounded-md"
               >
-                <option disabled selected value={null}>Atributo</option>
-                <option>Cantor</option>
-                <option>Gênero</option>
-                <option>Acústica</option>
-                <option>Similaridade</option>
+                <option disabled selected value={null}>Valor</option>
+                {#if tempEntrada.indice}
+                  {#each indices[tempEntrada.indice].valores as valor}
+                    <option value={valor.id}>{valor.nome}</option>
+                  {/each}
+                {/if}
               </select>
             </td>
             <td class="px-6 py-4">
@@ -107,9 +128,37 @@
         </tbody>
       </table>
     </div>
-    <div class="border border-2 rounded-md p-4">Pesos:</div>
+    <div
+      class="flex flex-col gap-4 border border-2 rounded-md p-4"
+      class:hidden={entradas.length === 0}
+    >
+      <h2 class="font-semibold text-xl">Pesos</h2>
+      <hr />
+      <table
+        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+      >
+        <thead
+          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr>
+            <th scope="col" class="px-6 py-3"> Índice </th>
+            <th scope="col" class="px-6 py-3"> Peso </th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each entradas as entrada}
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <th class="px-6 py-4"> {indices[entrada.indice].nome} </th>
+              <td class="px-6 py-4"> {indices[entrada.indice].peso} </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div class="mt-4 border border-2 rounded-md p-4">
+  <div class="flex flex-col gap-4 mt-4 border border-2 rounded-md p-4">
+    <h2 class="font-semibold text-xl">Resultado</h2>
+    <hr />
     <div class="relative overflow-x-auto">
       <table
         class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
@@ -118,35 +167,47 @@
           class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
         >
           <tr>
-            <th scope="col" class="px-6 py-3"> Capa </th>
-            <th scope="col" class="px-6 py-3"> Artista </th>
-            <th scope="col" class="px-6 py-3"> Música </th>
+            <th scope="col" class="px-6 py-3 text-center"> Capa </th>
+            <th scope="col" class="px-6 py-3 text-center"> Artista </th>
+            <th scope="col" class="px-6 py-3 text-center"> Música </th>
             {#each entradas as entrada}
-              <th scope="col" class="px-6 py-3"> {entrada.índice} </th>
+              <th scope="col" class="px-6 py-3 text-center">
+                {indices[entrada.indice].nome}
+              </th>
             {/each}
-            <th scope="col" class="px-6 py-3"> Similaridade (%) </th>
+            <th scope="col" class="px-6 py-3 text-center">
+              Similaridade (%)
+            </th>
           </tr>
         </thead>
         <tbody>
           {#each resultados as resultado}
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <td class="px-6 py-4"
-                ><img class="h-14 w-14 rounded-md border shadow-sm" src={resultado.capaAlbum} alt={resultado.nomeAlbum} /></td
+              <td class="px-6 py-4 text-center"
+                ><img
+                  class="mx-auto h-14 w-14 rounded-md border shadow-sm"
+                  src={resultado.capaAlbum}
+                  alt={resultado.nomeAlbum}
+                /></td
               >
               <th
                 scope="row"
-                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
                 {resultado.nomeArtista}
               </th>
               <th
                 scope="row"
-                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
                 {resultado.nomeMusica}
               </th>
-              <!-- <td class="px-6 py-4"> Silver </td> -->
-              <td class="px-6 py-4"> 0 </td>
+              {#each entradas as entrada}
+                <td class="px-6 py-4 text-center">
+                  {entrada.valor}
+                </td>
+              {/each}
+              <td class="px-6 py-4 text-center"> 0 </td>
             </tr>
           {/each}
         </tbody>
