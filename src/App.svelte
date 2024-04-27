@@ -1,13 +1,14 @@
 <script>
+  import genero from "./lib/base/indices/generos.json";
+
+  let darkMode = false;
+
   let indices = {
-    cantor: {
-      id: "cantor",
-      nome: "Cantor",
+    genero: {
+      id: "genero",
+      nome: "genero",
       peso: 2,
-      valores: [
-        { id: 0, nome: "Homem" },
-        { id: 1, nome: "Mulher" },
-      ],
+      valores: Object.keys(genero),
     },
   };
 
@@ -38,19 +39,27 @@
   function delEntrada(index) {
     entradas = entradas.filter((_, indexEntrada) => indexEntrada !== index);
   }
+
+  $: document.documentElement.classList.toggle("dark", darkMode);
 </script>
 
-<main class="flex flex-col gap-4 h-full w-11/12 mx-auto mt-8">
-  <h1 class="font-semibold text-2xl">Cálculo de similaridade</h1>
+<main class=" flex flex-col gap-4 h-full w-11/12 mx-auto mt-8">
+  <div class="flex flex-row justify-between">
+    <h1 class="font-semibold text-2xl">Cálculo de similaridade</h1>
+    <button on:click={() => (darkMode = !darkMode)}
+      >{darkMode ? "MODO CLARO" : "MODO ESCURO"}</button
+    >
+  </div>
   <hr />
   <div
     class="mt-4 grid grid-rows-2 lg:grid-rows-none lg:grid-cols-2 justify-between gap-4"
+    class:grid-rows-none={entradas.length === 0}
   >
-    <div class="flex flex-col gap-4 border border-2 rounded-md p-4">
+    <div class="flex flex-col gap-4 border rounded-md p-4">
       <h2 class="font-semibold text-xl">Caso de entrada</h2>
       <hr />
       <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+        class="w-full text-sm text-left rounded-md overflow-hidden rtl:text-right text-gray-500 dark:text-gray-400"
       >
         <thead
           class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
@@ -71,7 +80,7 @@
                 {indices[entrada.indice].nome}
               </th>
               <td class="px-6 py-4">
-                {indices[entrada.indice].valores[entrada.valor].nome}
+                {indices[entrada.indice].valores[entrada.valor]}
               </td>
               <td class="px-6 py-4">
                 <button
@@ -91,7 +100,7 @@
                 class="px-4 py-2 border border-1 rounded-md"
               >
                 <option disabled selected value={null}>Índice</option>
-                {#each Object.values(indices) as indice}
+                {#each Object.values(indices) as indice, index}
                   <option
                     disabled={entradas.filter(
                       (entrada) => entrada.indice === indice.id,
@@ -109,8 +118,8 @@
               >
                 <option disabled selected value={null}>Valor</option>
                 {#if tempEntrada.indice}
-                  {#each indices[tempEntrada.indice].valores as valor}
-                    <option value={valor.id}>{valor.nome}</option>
+                  {#each indices[tempEntrada.indice].valores as valor, id}
+                    <option value={id}>{valor}</option>
                   {/each}
                 {/if}
               </select>
@@ -129,13 +138,13 @@
       </table>
     </div>
     <div
-      class="flex flex-col gap-4 border border-2 rounded-md p-4"
+      class="flex flex-col gap-4 border rounded-md p-4"
       class:hidden={entradas.length === 0}
     >
       <h2 class="font-semibold text-xl">Pesos</h2>
       <hr />
       <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+        class="w-full text-sm text-left rounded-md overflow-hidden rtl:text-right text-gray-500 dark:text-gray-400"
       >
         <thead
           class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
@@ -156,12 +165,12 @@
       </table>
     </div>
   </div>
-  <div class="flex flex-col gap-4 mt-4 border border-2 rounded-md p-4">
+  <div class="flex flex-col gap-4 mt-4 border rounded-md p-4">
     <h2 class="font-semibold text-xl">Resultado</h2>
     <hr />
     <div class="relative overflow-x-auto">
       <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+        class="w-full text-sm text-left rounded-md overflow-hidden rtl:text-right text-gray-500 dark:text-gray-400"
       >
         <thead
           class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
