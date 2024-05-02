@@ -1,0 +1,14 @@
+[
+  {
+    "Atributo": "False",
+    "Valor": 0,
+    "menorQue": 1,
+    "maiorQue": -1
+  },
+  {
+    "Atributo": "True",
+    "Valor": 1,
+    "menorQue": 2,
+    "maiorQue": 0
+  }
+]

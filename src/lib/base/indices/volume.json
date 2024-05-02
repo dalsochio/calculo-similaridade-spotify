@@ -1,0 +1,38 @@
+[
+  {
+    "Atributo": "Indiferente",
+    "Valor": 0,
+    "menorQue": 999999999999,
+    "maiorQue": 0
+  },
+  {
+    "Atributo": "até 4000",
+    "Valor": 1,
+    "menorQue": 4001,
+    "maiorQue": 0
+  },
+  {
+    "Atributo": "entre 4000 e 8000",
+    "Valor": 2,
+    "menorQue": 8001,
+    "maiorQue": 4000
+  },
+  {
+    "Atributo": "entre 8000 e 12000",
+    "Valor": 3,
+    "menorQue": 12001,
+    "maiorQue": 8000
+  },
+  {
+    "Atributo": "entre 12000 e 16000",
+    "Valor": 4,
+    "menorQue": 16001,
+    "maiorQue": 12000
+  },
+  {
+    "Atributo": "entre 16000 e 20000",
+    "Valor": 5,
+    "menorQue": 20001,
+    "maiorQue": 16000
+  }
+]
