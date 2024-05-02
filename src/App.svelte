@@ -239,6 +239,16 @@
     entradas = entradas.filter((_, indexEntrada) => indexEntrada !== index);
   }
 
+  let tableWidth,
+    tableFather,
+    tableClone,
+    mostrarTodasAsInformacoes = false;
+
+  const updateScrollTable = () =>
+    (tableClone.scrollLeft = tableFather.scrollLeft);
+  const updateScrollTableClone = () =>
+    (tableFather.scrollLeft = tableClone.scrollLeft);
+
   $: document.documentElement.classList.toggle("dark", darkMode);
 </script>
 
@@ -255,7 +265,9 @@
     class:grid-rows-none={entradas.length === 0}
   >
     <div class="flex flex-col gap-4 border rounded-md p-4">
-      <h2 class="font-semibold text-xl">Casos de entrada ({entradas.length})</h2>
+      <h2 class="font-semibold text-xl">
+        Casos de entrada ({entradas.length})
+      </h2>
       <hr />
       <table
         class="w-full text-sm text-left rounded-md overflow-hidden rtl:text-right text-gray-500 dark:text-gray-400"
@@ -381,8 +393,21 @@
       Resultados acima de 50% ({resultados.length})
     </h2>
     <hr />
-    <div class="relative overflow-x-auto">
+    <div
+      class="relative overflow-x-auto"
+      bind:this={tableFather}
+      on:scroll|self={updateScrollTable}
+    >
+      <div
+        id="table-clone"
+        bind:this={tableClone}
+        on:scroll|self={updateScrollTableClone}
+        class="h-6 min-w-full overflow-x-auto rounded mb-4 sticky left-0 scroll-auto animate-none"
+      >
+        <div style:width={`${tableWidth}px`}></div>
+      </div>
       <table
+        bind:clientWidth={tableWidth}
         class="w-full text-sm text-left rounded-md overflow-hidden rtl:text-right text-gray-500 dark:text-gray-400"
       >
         <thead
@@ -415,17 +440,23 @@
                 scope="row"
                 class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
-              <a target="_blank" href={`https://open.spotify.com/intl-pt/artist/${musica.artistaId}`}>
-                {musica.nomeArtista}
-              </a>
+                <a
+                  target="_blank"
+                  href={`https://open.spotify.com/intl-pt/artist/${musica.artistaId}`}
+                >
+                  {musica.nomeArtista}
+                </a>
               </th>
               <th
                 scope="row"
                 class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
-              <a target="_blank" href={`https://open.spotify.com/intl-pt/track/${musica.musicaId}`}>
-                {musica.nomeMusica}
-              </a>
+                <a
+                  target="_blank"
+                  href={`https://open.spotify.com/intl-pt/track/${musica.musicaId}`}
+                >
+                  {musica.nomeMusica}
+                </a>
               </th>
               {#each entradas as entrada}
                 <td class="px-6 py-4 text-center">
