@@ -118,7 +118,7 @@
     valencia: calcularPesoAtributo("valencia", dado["Song_valence\r"]),
     vivacidade: calcularPesoAtributo("vivacidade", dado.Song_liveness),
     volume: calcularPesoAtributo("volume", dado.Song_loudness),
-    similaridadeIndice: 0,
+    similaridadeIndice: [],
     similaridade: 0,
   }));
 
@@ -147,7 +147,7 @@
           entrada,
           musica[entrada.indice],
         );
-        musica.similaridadeIndice = similaridadeIndice;
+        musica.similaridadeIndice[entrada.indice] = similaridadeIndice;
         similaridade += similaridadeIndice * indices[entrada.indice].peso;
       });
 
@@ -241,8 +241,7 @@
 
   let tableWidth,
     tableFather,
-    tableClone,
-    mostrarTodasAsInformacoes = false;
+    tableClone;
 
   const updateScrollTable = () =>
     (tableClone.scrollLeft = tableFather.scrollLeft);
@@ -527,7 +526,7 @@
                     indices[entrada.indice].atributos[entrada.valor]
                   ]}
                 {:else}
-                  {musicaSelecionada.similaridadeIndice}
+                  {musicaSelecionada.similaridadeIndice[entrada.indice]}
                 {/if}
               </th>
               <td class="px-6 py-4 text-center">
@@ -545,7 +544,7 @@
                   ).toFixed(2)}
                 {:else}
                   {(
-                    musicaSelecionada.similaridadeIndice *
+                    musicaSelecionada.similaridadeIndice[entrada.indice] *
                     indices[entrada.indice].peso
                   ).toFixed(2)}
                 {/if}
@@ -575,7 +574,7 @@
                       ] * indices[entrada.indice].peso);
                   } else {
                     return (soma +=
-                      musicaSelecionada.similaridadeIndice *
+                      musicaSelecionada.similaridadeIndice[entrada.indice] *
                       indices[entrada.indice].peso);
                   }
                 }, 0)
@@ -602,7 +601,7 @@
                       ] * indices[entrada.indice].peso);
                   } else {
                     return (soma +=
-                      musicaSelecionada.similaridadeIndice *
+                      musicaSelecionada.similaridadeIndice[entrada.indice] *
                       indices[entrada.indice].peso);
                   }
                 }, 0) /
